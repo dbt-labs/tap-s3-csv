@@ -1,0 +1,5 @@
+config.json
+persist.json
+state.json
+*.egg-info/
+*.pyc
