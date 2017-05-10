@@ -1,5 +1,3 @@
-# TODO: remove date-time as a datatype
-
 import argparse
 import json
 import singer
@@ -8,6 +6,7 @@ import dateutil
 import tap_s3_csv.s3 as s3
 import tap_s3_csv.conversion as conversion
 import tap_s3_csv.config
+import tap_s3_csv.format_handler
 
 from tap_s3_csv.logger import LOGGER as logger
 
@@ -17,7 +16,7 @@ def get_sampled_schema_for_table(config, table_spec):
 
     s3_files = s3.get_input_files_for_table(config, table_spec)
 
-    samples = s3.sample_files(config, s3_files)
+    samples = s3.sample_files(config, table_spec, s3_files)
 
     metadata_schema = {
         '_s3_source_bucket': {'type': 'string'},
@@ -80,7 +79,9 @@ def sync_table_file(config, s3_file, table_spec, schema):
 
     bucket = config['bucket']
     table_name = table_spec['name']
-    iterator = s3.get_row_iterator(config, s3_file)
+
+    iterator = tap_s3_csv.format_handler.get_row_iterator(
+        config, table_spec, s3_file)
 
     records_synced = 0
 

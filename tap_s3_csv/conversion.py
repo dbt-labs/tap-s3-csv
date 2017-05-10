@@ -41,7 +41,7 @@ def convert(datum, override_type=None):
         except ValueError:
             pass
 
-    if override_type in (None, 'date-time'):
+    if override_type == 'date-time':
         try:
             to_return = dateutil.parser.parse(datum)
 
@@ -98,8 +98,6 @@ def pick_datatype(counts):
             to_return = 'integer'
         elif counts.get('number', 0) > 0:
             to_return = 'number'
-        elif counts.get('date-time', 0) > 0:
-            to_return = 'date-time'
 
     elif(len(counts) == 2 and
          counts.get('integer', 0) > 0 and

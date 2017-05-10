@@ -1,5 +1,3 @@
-config.json
-persist.json
-state.json
+*.json
 *.egg-info/
 *.pyc
