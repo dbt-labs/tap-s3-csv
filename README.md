@@ -1,6 +1,6 @@
 # tap-s3-csv
 [Singer](singer.io) tap that produces JSON-formatted data following
-the [https://github.com/singer-io/getting-started/blob/master/SPEC.md](Singer spec).
+the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
 Given a configuration that specifies a bucket, a file pattern to match, a file format (`csv` or `excel`),
 and a table name, this tap reads new files from S3, parses them, infers a schema, and outputs the data
