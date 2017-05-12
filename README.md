@@ -6,23 +6,11 @@ Given a configuration that specifies a bucket, a file pattern to match, a file f
 and a table name, this tap reads new files from S3, parses them, infers a schema, and outputs the data
 according to the Singer spec.
 
-### Requirements
+### Installation
 
-Your CSV or Excel files MUST:
+wip
 
-- Have a header row.
-- Have cells fully populated. Empty / missing cells will break the integration.
-
-### Output Format
-
-- Column names have whitespace removed and replaced with underscores.
-- They are also downcased.
-- A few extra fields are added for help with auditing:
-  - `_s3_source_bucket`: The bucket that this record came from
-  - `_s3_source_file`: The path to the file that this record came from
-  - `_s3_source_lineno`: The line number in the source file that this record was found on
-  
-__Example__
+### Example
 
 Given a source file: `s3://csv-bucket/csv-exports/today.csv`
 
@@ -31,6 +19,12 @@ id,First Name, Last Name
 1,Michael,Bluth
 2,George Michael,Bluth
 3,Tobias,Funke
+```
+
+And a config file:
+
+```json
+wip
 ```
 
 An output record might look like:
@@ -45,3 +39,22 @@ An output record might look like:
   "_s3_source_lineno": 4
 }
 ```
+
+### Input File Requirements
+
+Your CSV or Excel files MUST:
+
+- Have a header row.
+- Have cells fully populated. Empty / missing cells will break the integration.
+
+### Configuration Format
+
+### Output Format
+
+- Column names have whitespace removed and replaced with underscores.
+- They are also downcased.
+- A few extra fields are added for help with auditing:
+  - `_s3_source_bucket`: The bucket that this record came from
+  - `_s3_source_file`: The path to the file that this record came from
+  - `_s3_source_lineno`: The line number in the source file that this record was found on
+ 
