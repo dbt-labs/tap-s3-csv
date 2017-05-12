@@ -1,4 +1,6 @@
 # tap-s3-csv
+Author: Connor McArthur (connor@fishtownanalytics.com)
+
 [Singer](singer.io) tap that produces JSON-formatted data following
 the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
@@ -97,14 +99,14 @@ See below for an exhaustive list of configuration fields:
     ;; your AWS credentials go here.
     "aws_access_key_id": "YOUR_ACCESS_KEY_ID",
     "aws_secret_access_key": "YOUR_SECRET_ACCESS_KEY",
-    
+
     ;; the start date to use on the first run. the tap outputs an updated state on each
     ;; run which you can use going forward for incremental replication
     "start_date": "2017-05-01T00:00:00Z",
-    
+
     ;; the bucket to use. make sure the AWS credentials provided have read access.
     "bucket": "csv-bucket",
-    
+
     ;; table definitions. you can specify multiple tables to be pulled from a given
     ;; bucket.
     "tables": [
@@ -112,17 +114,17 @@ See below for an exhaustive list of configuration fields:
         {
             ;; table name to output
             "name": "bluths_from_csv",
-            
+
             ;; pattern to match in the bucket
             "pattern": "csv-exports/(.*)\\.csv$",
-            
+
             ;; primary key for this table. if append only, use:
             ;;   ["_s3_source_file", "_s3_source_lineno"]
             "key_properties": ["id"],
-            
+
             ;; format, either "csv" or "excel"
             "format": "csv",
-            
+
             ;; for any field in the table, you can hardcode the json schema datatype.
             ;; "_conversion_type" is the type that the tap will try to coerce the field
             ;; to -- one of "string", "integer", "number", or "date-time". this tap
@@ -132,7 +134,7 @@ See below for an exhaustive list of configuration fields:
                     "type": ["null", "integer"],
                     "_conversion_type": "integer"
                 },
-                
+
                 ;; if you want the tap to enforce that a field is not nullable, you can do
                 ;; it like so:
                 "first_name": {
@@ -141,14 +143,14 @@ See below for an exhaustive list of configuration fields:
                 }
             }
         },
-        
+
         ;; example excel definition
         {
             "name": "bluths_from_excel",
             "pattern": "excel-exports/(.*)\\.xlsx$",
             "key_properties": ["id"],
             "format": "excel",
-            
+
             ;; the excel definition is identical to csv except that you must specify
             ;; the worksheet name to pull from in your xls(x) file.
             "worksheet_name": "Names"
@@ -165,4 +167,3 @@ See below for an exhaustive list of configuration fields:
   - `_s3_source_bucket`: The bucket that this record came from
   - `_s3_source_file`: The path to the file that this record came from
   - `_s3_source_lineno`: The line number in the source file that this record was found on
- 
