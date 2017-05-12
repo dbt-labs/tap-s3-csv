@@ -81,8 +81,6 @@ An output record might look like:
 
 ### Input File Gotchas
 
-Your CSV or Excel files MUST:
-
 - Input files MUST have a header row.
 - Input files MUST have cells fully populated. Missing cells will break the integration. Empty cells
   are handled by the tap.
