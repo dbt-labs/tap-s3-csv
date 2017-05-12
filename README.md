@@ -1,6 +1,8 @@
 # tap-s3-csv
 Author: Connor McArthur (connor@fishtownanalytics.com)
 
+CircleCI `master`: [![CircleCI](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master.svg?style=svg)](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master)
+
 [Singer](singer.io) tap that produces JSON-formatted data following
 the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
