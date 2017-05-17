@@ -61,7 +61,7 @@ def sync_table(config, state, table_spec):
     override_schema = {'properties': table_spec.get('schema_overrides', {})}
     schema = merge_dicts(
         inferred_schema,
-        {'properties': override_schema})
+        {'schema': {'properties': override_schema}})
 
     singer.write_schema(
         table_name,
