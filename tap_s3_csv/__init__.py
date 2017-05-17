@@ -11,6 +11,22 @@ import tap_s3_csv.format_handler
 from tap_s3_csv.logger import LOGGER as logger
 
 
+def merge_dicts(a, b):
+    to_return = a.copy()
+
+    for key in b:
+        if key in a:
+            if isinstance(a[key], dict) and isinstance(b[key], dict):
+                to_return[key] = merge_dicts(a[key], b[key])
+            else:
+                to_return[key] = b[key]
+
+        else:
+            to_return[key] = b[key]
+
+    return to_return
+
+
 def get_sampled_schema_for_table(config, table_spec):
     logger.info('Sampling records to determine table schema.')
 
@@ -42,8 +58,10 @@ def sync_table(config, state, table_spec):
     logger.info('Getting files modified since {}.'.format(modified_since))
 
     inferred_schema = get_sampled_schema_for_table(config, table_spec)
-    override_schema = table_spec.get('schema_overrides', {})
-    schema = {**inferred_schema, **override_schema}  # noqa
+    override_schema = {'properties': table_spec.get('schema_overrides', {})}
+    schema = merge_dicts(
+        inferred_schema,
+        {'properties': override_schema})
 
     singer.write_schema(
         table_name,
