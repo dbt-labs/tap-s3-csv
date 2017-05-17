@@ -44,7 +44,7 @@ def get_sampled_schema_for_table(config, table_spec):
 
     return {
         'type': 'object',
-        'properties': {**data_schema, **metadata_schema}  # noqa
+        'properties': merge_dicts(data_schema, metadata_schema)
     }
 
 
@@ -61,7 +61,7 @@ def sync_table(config, state, table_spec):
     override_schema = {'properties': table_spec.get('schema_overrides', {})}
     schema = merge_dicts(
         inferred_schema,
-        {'schema': {'properties': override_schema}})
+        override_schema)
 
     singer.write_schema(
         table_name,
