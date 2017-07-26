@@ -97,54 +97,54 @@ See below for an exhaustive list of configuration fields:
 
 ```javascript
 {
-    ;; your AWS credentials go here.
+    // your AWS credentials go here.
     "aws_access_key_id": "YOUR_ACCESS_KEY_ID",
     "aws_secret_access_key": "YOUR_SECRET_ACCESS_KEY",
 
-    ;; the start date to use on the first run. the tap outputs an updated state on each
-    ;; run which you can use going forward for incremental replication
+    // the start date to use on the first run. the tap outputs an updated state on each
+    // run which you can use going forward for incremental replication
     "start_date": "2017-05-01T00:00:00Z",
 
-    ;; the bucket to use. make sure the AWS credentials provided have read access.
+    // the bucket to use. make sure the AWS credentials provided have read access.
     "bucket": "csv-bucket",
 
-    ;; table definitions. you can specify multiple tables to be pulled from a given
-    ;; bucket.
+    // table definitions. you can specify multiple tables to be pulled from a given
+    // bucket.
     "tables": [
-        ;; example csv table definition with schema overrides
+        // example csv table definition with schema overrides
         {
-            ;; table name to output
+            // table name to output
             "name": "bluths_from_csv",
 
-            ;; you can limit the paths searched in s3 if there are many files in your
-            ;; bucket
+            // you can limit the paths searched in s3 if there are many files in your
+            // bucket
             "search_prefix": "csv-exports",
 
-            ;; pattern to match in the bucket
+            // pattern to match in the bucket
             "pattern": "csv-exports/(.*)\\.csv$",
 
-            ;; primary key for this table. if append only, use:
-            ;;   ["_s3_source_file", "_s3_source_lineno"]
+            // primary key for this table. if append only, use:
+            //   ["_s3_source_file", "_s3_source_lineno"]
             "key_properties": ["id"],
 
-            ;; format, either "csv" or "excel"
+            // format, either "csv" or "excel"
             "format": "csv",
 
-            ;; if the files don't have a header row, you can specify the field names
+            // if the files don't have a header row, you can specify the field names
             "field_names": ["id", "first_name", "last_name"],
 
-            ;; for any field in the table, you can hardcode the json schema datatype.
-            ;; "_conversion_type" is the type that the tap will try to coerce the field
-            ;; to -- one of "string", "integer", "number", or "date-time". this tap
-            ;; also assumes that all fields are nullable to be more resilient to empty cells.
+            // for any field in the table, you can hardcode the json schema datatype.
+            // "_conversion_type" is the type that the tap will try to coerce the field
+            // to -- one of "string", "integer", "number", or "date-time". this tap
+            // also assumes that all fields are nullable to be more resilient to empty cells.
             "schema_overrides": {
                 "id": {
                     "type": ["null", "integer"],
                     "_conversion_type": "integer"
                 },
 
-                ;; if you want the tap to enforce that a field is not nullable, you can do
-                ;; it like so:
+                // if you want the tap to enforce that a field is not nullable, you can do
+                // it like so:
                 "first_name": {
                     "type": "string",
                     "_conversion_type": "string"
@@ -152,15 +152,15 @@ See below for an exhaustive list of configuration fields:
             }
         },
 
-        ;; example excel definition
+        // example excel definition
         {
             "name": "bluths_from_excel",
             "pattern": "excel-exports/(.*)\\.xlsx$",
             "key_properties": ["id"],
             "format": "excel",
 
-            ;; the excel definition is identical to csv except that you must specify
-            ;; the worksheet name to pull from in your xls(x) file.
+            // the excel definition is identical to csv except that you must specify
+            // the worksheet name to pull from in your xls(x) file.
             "worksheet_name": "Names"
         }
     ]
