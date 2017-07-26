@@ -20,7 +20,7 @@ def get_row_iterator(config, table_spec, s3_path):
 
     if table_spec['format'] == 'csv':
         return tap_s3_csv.csv_handler.get_row_iterator(
-            file_handle)
+            table_spec, file_handle)
 
     elif table_spec['format'] == 'excel':
         return tap_s3_csv.excel_handler.get_row_iterator(

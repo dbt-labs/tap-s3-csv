@@ -115,6 +115,10 @@ See below for an exhaustive list of configuration fields:
             ;; table name to output
             "name": "bluths_from_csv",
 
+            ;; you can limit the paths searched in s3 if there are many files in your
+            ;; bucket
+            "search_prefix": "csv-exports",
+
             ;; pattern to match in the bucket
             "pattern": "csv-exports/(.*)\\.csv$",
 
@@ -124,6 +128,9 @@ See below for an exhaustive list of configuration fields:
 
             ;; format, either "csv" or "excel"
             "format": "csv",
+
+            ;; if the files don't have a header row, you can specify the field names
+            "field_names": ["id", "first_name", "last_name"],
 
             ;; for any field in the table, you can hardcode the json schema datatype.
             ;; "_conversion_type" is the type that the tap will try to coerce the field

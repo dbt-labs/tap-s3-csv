@@ -80,7 +80,7 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     return to_return
 
 
-def list_files_in_bucket(config, bucket):
+def list_files_in_bucket(config, bucket, search_prefix=None):
     s3_client = boto3.client(
         's3',
         aws_access_key_id=config['aws_access_key_id'],
@@ -89,9 +89,15 @@ def list_files_in_bucket(config, bucket):
     s3_objects = []
 
     max_results = 1000
-    result = s3_client.list_objects_v2(
-        Bucket=bucket,
-        MaxKeys=max_results)
+    args = {
+        'Bucket': bucket,
+        'MaxKeys': max_results,
+    }
+
+    if search_prefix is not None:
+        args['Prefix'] = search_prefix
+
+    result = s3_client.list_objects_v2(**args)
 
     s3_objects += result['Contents']
     next_continuation_token = result.get('NextContinuationToken')
@@ -99,10 +105,11 @@ def list_files_in_bucket(config, bucket):
     while next_continuation_token is not None:
         logger.debug('Continuing pagination with token "{}".'
                      .format(next_continuation_token))
-        result = s3_client.list_objects_v2(
-            Bucket=bucket,
-            ContinuationToken=next_continuation_token,
-            MaxKeys=max_results)
+
+        continuation_args = args.copy()
+        continuation_args['ContinuationToken'] = next_continuation_token
+
+        result = s3_client.list_objects_v2(**continuation_args)
 
         s3_objects += result['Contents']
         next_continuation_token = result.get('NextContinuationToken')
