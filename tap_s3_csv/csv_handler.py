@@ -15,7 +15,7 @@ def generator_wrapper(reader):
                     "Got a null key while reading row (value '{}'). "
                     "Please check that the number of names specified "
                     "in field_names for this table equals the number "
-                    "of columns in your CSV file.")
+                    "of columns in your CSV file.".format(value))
                 raise RuntimeError()
 
             formatted_key = key
