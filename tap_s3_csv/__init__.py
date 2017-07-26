@@ -11,18 +11,18 @@ import tap_s3_csv.format_handler
 from tap_s3_csv.logger import LOGGER as logger
 
 
-def merge_dicts(a, b):
-    to_return = a.copy()
+def merge_dicts(first, second):
+    to_return = first.copy()
 
-    for key in b:
-        if key in a:
-            if isinstance(a[key], dict) and isinstance(b[key], dict):
-                to_return[key] = merge_dicts(a[key], b[key])
+    for key in second:
+        if key in first:
+            if isinstance(first[key], dict) and isinstance(second[key], dict):
+                to_return[key] = merge_dicts(first[key], second[key])
             else:
-                to_return[key] = b[key]
+                to_return[key] = second[key]
 
         else:
-            to_return[key] = b[key]
+            to_return[key] = second[key]
 
     return to_return
 
@@ -63,7 +63,7 @@ def sync_table(config, state, table_spec):
     logger.info('Found {} files to be synced.'
                 .format(len(s3_files)))
 
-    if len(s3_files) == 0:
+    if not s3_files:
         return state
 
     inferred_schema = get_sampled_schema_for_table(config, table_spec)
