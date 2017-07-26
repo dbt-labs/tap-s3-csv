@@ -60,7 +60,8 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
         'Checking bucket "{}" for keys matching "{}"'
         .format(bucket, pattern))
 
-    s3_objects = list_files_in_bucket(config, bucket)
+    s3_objects = list_files_in_bucket(
+        config, bucket, table_spec.get('search_prefix'))
 
     for s3_object in s3_objects:
         key = s3_object['Key']
