@@ -1,7 +1,7 @@
 # tap-s3-csv
 Author: Connor McArthur (connor@fishtownanalytics.com)
 
-[![CircleCI](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master.svg?style=shield)](https://circleci.com/gh/fishtown-analytics/tap-s3-csv) [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
+[![CircleCI](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master.svg?style=shield)](https://circleci.com/gh/fishtown-analytics/tap-s3-csv) [![Code Climate](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv/badges/gpa.svg)](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv)
 
 [Singer](singer.io) tap that produces JSON-formatted data following
 the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
