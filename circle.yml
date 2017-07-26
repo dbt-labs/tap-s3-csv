@@ -4,8 +4,9 @@ machine:
 
 dependencies:
   pre:
-    - pip install pylint
+    - pip install pylint pytest
 
 test:
   post:
     - pylint tap_s3_csv -d missing-docstring -d logging-format-interpolation -d too-many-locals -d too-many-arguments
+    - pytest
