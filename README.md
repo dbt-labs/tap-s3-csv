@@ -75,7 +75,8 @@ An output record might look like:
   "last_name": "Funke",
   "_s3_source_bucket": "csv-bucket",
   "_s3_source_file": "csv-exports/today.csv",
-  "_s3_source_lineno": 4
+  "_s3_source_lineno": 4,
+  "_s3_extra": null
 }
 ```
 
@@ -174,3 +175,4 @@ See below for an exhaustive list of configuration fields:
   - `_s3_source_bucket`: The bucket that this record came from
   - `_s3_source_file`: The path to the file that this record came from
   - `_s3_source_lineno`: The line number in the source file that this record was found on
+  - `_s3_extra`: If you specify field names in the config, and there are more records in a row than field names, the overflow will end up here.
