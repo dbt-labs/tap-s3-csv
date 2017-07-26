@@ -8,6 +8,13 @@ def generator_wrapper(reader):
 
     for row in reader:
         for key, value in row.items():
+            if key is None:
+                raise RuntimeError(
+                    "Got a null key while reading row (value '{}'). "
+                    "Please check that the number of names specified "
+                    "in field_names for this table equals the number "
+                    "of columns in your CSV file.")
+
             formatted_key = key
 
             # remove non-word, non-whitespace characters
