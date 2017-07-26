@@ -2,8 +2,6 @@ import codecs
 import csv
 import re
 
-from tap_s3_csv.logger import LOGGER as logger
-
 
 def generator_wrapper(reader):
     to_return = {}
@@ -11,12 +9,6 @@ def generator_wrapper(reader):
     for row in reader:
         for key, value in row.items():
             if key is None:
-                logger.warn(
-                    "Got a null key while reading row (value '{}'). "
-                    "Please check that the number of names specified "
-                    "in field_names for this table equals the number "
-                    "of columns in your CSV file.".format(value))
-                logger.info("Saving the remainder as '_s3_extra'.")
                 key = '_s3_extra'
 
             formatted_key = key
