@@ -31,14 +31,14 @@ def convert(datum, override_type=None):
         try:
             to_return = int(datum)
             return (to_return, 'integer',)
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
     if override_type in (None, 'number'):
         try:
             to_return = float(datum)
             return (to_return, 'number',)
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
     if override_type == 'date-time':
@@ -50,7 +50,7 @@ def convert(datum, override_type=None):
                 to_return = to_return.replace(tzinfo=pytz.utc)
 
             return (to_return.isoformat(), 'date-time',)
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
     return (str(datum), 'string',)
