@@ -57,6 +57,15 @@ def sync_table(config, state, table_spec):
     logger.info('Syncing table "{}".'.format(table_name))
     logger.info('Getting files modified since {}.'.format(modified_since))
 
+    s3_files = s3.get_input_files_for_table(
+        config, table_spec, modified_since)
+
+    logger.info('Found {} files to be synced.'
+                .format(len(s3_files)))
+
+    if len(s3_files) == 0:
+        return state
+
     inferred_schema = get_sampled_schema_for_table(config, table_spec)
     override_schema = {'properties': table_spec.get('schema_overrides', {})}
     schema = merge_dicts(
@@ -67,12 +76,6 @@ def sync_table(config, state, table_spec):
         table_name,
         schema,
         key_properties=table_spec['key_properties'])
-
-    s3_files = s3.get_input_files_for_table(
-        config, table_spec, modified_since)
-
-    logger.info('Found {} files to be synced.'
-                .format(len(s3_files)))
 
     records_streamed = 0
 
