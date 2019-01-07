@@ -4,8 +4,6 @@ from tap_s3_csv.logger import LOGGER as logger
 from voluptuous import Schema, Required, Any, Optional
 
 CONFIG_CONTRACT = Schema({
-    Required('aws_access_key_id'): str,
-    Required('aws_secret_access_key'): str,
     Required('start_date'): str,
     Required('bucket'): str,
     Required('tables'): [{

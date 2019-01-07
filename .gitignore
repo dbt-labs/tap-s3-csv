@@ -1,3 +1,4 @@
 *.json
 *.egg-info/
 *.pyc
+.idea/

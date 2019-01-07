@@ -82,10 +82,7 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
 
 
 def list_files_in_bucket(config, bucket, search_prefix=None):
-    s3_client = boto3.client(
-        's3',
-        aws_access_key_id=config['aws_access_key_id'],
-        aws_secret_access_key=config['aws_secret_access_key'])
+    s3_client = boto3.client('s3')
 
     s3_objects = []
 
