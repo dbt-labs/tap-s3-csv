@@ -1,10 +1,8 @@
 import argparse
-import codecs
 import json
 import singer
 
 import dateutil
-from smart_open import smart_open
 
 import tap_s3_csv.s3 as s3
 import tap_s3_csv.conversion as conversion
