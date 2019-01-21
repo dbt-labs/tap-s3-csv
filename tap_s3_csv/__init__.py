@@ -3,6 +3,7 @@ import json
 import singer
 
 import dateutil
+
 import tap_s3_csv.s3 as s3
 import tap_s3_csv.conversion as conversion
 import tap_s3_csv.config
