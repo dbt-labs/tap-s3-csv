@@ -148,6 +148,9 @@ def do_sync(args):
     for table in config['tables']:
         state = sync_table(config, state, table)
 
+    state = {'COMPLETED': True}
+    singer.write_state(state)
+
     logger.info('Done syncing.')
 
 
