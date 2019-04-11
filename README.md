@@ -136,6 +136,10 @@ See below for an exhaustive list of configuration fields:
             // if true, unzip the file before reading it at a csv
             "unzip": true,
 
+            // if specified, override the default CSV quoting config
+            // More info: https://docs.python.org/3/library/csv.html#csv.QUOTE_ALL
+            "quoting": "QUOTE_NONE",
+
             // if the files don't have a header row, you can specify the field names
             "field_names": ["id", "first_name", "last_name"],
 

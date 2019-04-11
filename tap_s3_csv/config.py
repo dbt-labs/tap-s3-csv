@@ -15,6 +15,7 @@ CONFIG_CONTRACT = Schema({
         Required('format'): Any('csv', 'excel'),
         Optional('unzip'): bool,
         Optional('delimiter'): str,
+        Optional('quoting'): Any('QUOTE_MINIMAL', 'QUOTE_ALL', 'QUOTE_NONNUMERIC', 'QUOTE_NONE'),
         Optional('search_prefix'): str,
         Optional('field_names'): [str],
         Optional('worksheet_name'): str,

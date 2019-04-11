@@ -1,9 +1,7 @@
 import codecs
 import csv
 import re
-
-import zlib
-import io
+import gzip
 
 
 def generator_wrapper(reader):
@@ -27,30 +25,9 @@ def generator_wrapper(reader):
         yield to_return
 
 
-def gunzip(stream):
-    dec = zlib.decompressobj(32 + zlib.MAX_WBITS)
-    for chunk in stream:
-        rv = dec.decompress(chunk)
-        if rv:
-            yield rv
-
-
-def iter_lines(stream):
-    buf = ""
-    for chunk in stream:
-        for byte in chunk:
-            char = chr(byte)
-            if char == '\n':
-                yield buf.encode('utf-8')
-                buf = ""
-            else:
-                buf += char
-
-
 def get_row_iterator(table_spec, file_handle):
-
     if table_spec.get('unzip'):
-        raw_stream = iter_lines(gunzip(file_handle._raw_stream))
+        raw_stream = gzip.GzipFile(fileobj=file_handle._raw_stream)
     else:
         raw_stream = file_handle._raw_stream
 
@@ -66,6 +43,10 @@ def get_row_iterator(table_spec, file_handle):
         field_names = table_spec['field_names']
 
     delimiter = table_spec.get('delimiter', ',')
-    reader = csv.DictReader(file_stream, delimiter=delimiter, fieldnames=field_names)
+
+    quote_config = table_spec.get('quoting', 'QUOTE_MINIMAL')
+    quoting = getattr(csv, quote_config)
+
+    reader = csv.DictReader(file_stream, quoting=quoting, delimiter=delimiter, fieldnames=field_names)
 
     return generator_wrapper(reader)
