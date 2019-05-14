@@ -73,7 +73,7 @@ def count_sample(sample, start=None):
 
 
 def count_samples(samples):
-    to_return = None
+    to_return = {}
 
     for sample in samples:
         to_return = count_sample(sample, to_return)
