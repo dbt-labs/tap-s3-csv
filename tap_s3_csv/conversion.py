@@ -111,6 +111,9 @@ def generate_schema(samples):
     to_return = {}
     counts = count_samples(samples)
 
+    if not counts:
+        return to_return
+
     for key, value in counts.items():
         datatype = pick_datatype(value)
 
