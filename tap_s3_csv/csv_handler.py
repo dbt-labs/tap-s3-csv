@@ -1,7 +1,8 @@
 import codecs
 import csv
 import re
-
+from io import TextIOWrapper
+from gzip import GzipFile
 
 def generator_wrapper(reader):
     to_return = {}
@@ -24,12 +25,15 @@ def generator_wrapper(reader):
         yield to_return
 
 
-def get_row_iterator(table_spec, file_handle):
+def get_row_iterator(table_spec, file_handle, is_gzip=False):
     # we use a protected member of the s3 object, _raw_stream, here to create
     # a generator for data from the s3 file.
     # pylint: disable=protected-access
-    file_stream = codecs.iterdecode(
-        file_handle._raw_stream, encoding='utf-8')
+    if is_gzip:
+        gzipped = GzipFile(None, 'rb', fileobj=file_handle)
+        file_stream = TextIOWrapper(gzipped)
+    else:
+        file_stream = codecs.iterdecode(file_handle._raw_stream, encoding='utf-8')
 
     field_names = None
 

@@ -31,10 +31,12 @@ def sample_file(config, table_spec, s3_path, sample_rate, max_records):
     return samples
 
 
-def sample_files(config, table_spec, s3_files,
-                 sample_rate=10, max_records=1000, max_files=5):
-    to_return = []
+def sample_files(config, table_spec, s3_files):
+    sample_rate = int(table_spec.get('sample_rate', 10))
+    max_records = int(table_spec.get('sample_max_records', 1000))
+    max_files = int(table_spec.get('sample_max_files', 5))
 
+    to_return = []
     files_so_far = 0
 
     for s3_file in s3_files:
@@ -61,7 +63,9 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
         .format(bucket, pattern))
 
     s3_objects = list_files_in_bucket(
-        config, bucket, table_spec.get('search_prefix'))
+        config, bucket,
+        table_spec.get('max_results', 1000),
+        table_spec.get('search_prefix'))
 
     for s3_object in s3_objects:
         key = s3_object['Key']
@@ -81,7 +85,7 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     return to_return
 
 
-def list_files_in_bucket(config, bucket, search_prefix=None):
+def list_files_in_bucket(config, bucket, max_results, search_prefix=None):
     s3_client = boto3.client(
         's3',
         aws_access_key_id=config['aws_access_key_id'],
@@ -89,7 +93,6 @@ def list_files_in_bucket(config, bucket, search_prefix=None):
 
     s3_objects = []
 
-    max_results = 1000
     args = {
         'Bucket': bucket,
         'MaxKeys': max_results,

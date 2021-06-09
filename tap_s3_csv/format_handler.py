@@ -19,8 +19,9 @@ def get_row_iterator(config, table_spec, s3_path):
     file_handle = get_file_handle(config, s3_path)
 
     if table_spec['format'] == 'csv':
+        is_gzip = s3_path.endswith('.gz') or s3_path.endswith('.gzip')
         return tap_s3_csv.csv_handler.get_row_iterator(
-            table_spec, file_handle)
+            table_spec, file_handle, is_gzip)
 
     elif table_spec['format'] == 'excel':
         return tap_s3_csv.excel_handler.get_row_iterator(
