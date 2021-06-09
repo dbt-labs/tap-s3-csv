@@ -8,7 +8,7 @@ the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.
 
 Given a configuration that specifies a bucket, a file pattern to match, a file format (`csv` or `excel`),
 and a table name, this tap reads new files from S3, parses them, infers a schema, and outputs the data
-according to the Singer spec.
+according to the Singer spec. This tap supports csv files that are gzipped if the `.gz` or `.gzip` prefix is in the filename. 
 
 ### Installation
 
@@ -31,7 +31,7 @@ to generate data.
 This tap:
 
  - Searches S3 for files matching the spec given.
- - Samples 1000 records out of the first five files found to infer datatypes.
+ - Samples (`sample_rate`) a number of records (`sample_max_records`) out of the first number (`sample_max_files`) files found to infer datatypes.
  - Iterates through files from least recently modified to most recently modified, outputting data according
    to the generated schema & Singer spec.
  - After completing each file, it writes out state that can be used to enable incremental replication.
@@ -60,7 +60,11 @@ And a config file:
             "name": "bluths",
             "pattern": "csv-exports/(.*)\\.csv$",
             "key_properties": ["id"],
-            "format": "csv"
+            "format": "csv",
+            "max_results": 1000,
+            "sample_max_records": 1000,
+            "sample_rate": 10,
+            "sample_max_files": 5
         }
     ]
 }
