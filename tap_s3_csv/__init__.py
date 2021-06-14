@@ -14,10 +14,6 @@ import backoff
 MAX_RETRIES = 3
 
 
-def fatal_code(e):
-    return 400 <= e.response.status_code < 500
-
-
 def retry_handler(details):
     logger.info("Received retryable error -- Retry %s/%s",
                 details['tries'], MAX_RETRIES)
@@ -107,8 +103,7 @@ def sync_table(config, state, table_spec):
     return state
 
 
-@backoff.on_exception(backoff.expo, ConnectionResetError,
-                      giveup=fatal_code, on_backoff=retry_handler, max_tries=MAX_RETRIES)
+@backoff.on_exception(backoff.expo, ConnectionResetError, on_backoff=retry_handler, max_tries=MAX_RETRIES)
 def sync_table_file(config, s3_file, table_spec, schema):
     logger.info('Syncing file "{}".'.format(s3_file))
 
