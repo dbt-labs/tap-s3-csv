@@ -1,6 +1,4 @@
 import dateutil
-import pytz
-
 from tap_s3_csv.logger import LOGGER as logger
 
 
@@ -42,16 +40,7 @@ def convert(datum, override_type=None):
             pass
 
     if override_type == 'date-time':
-        try:
-            to_return = dateutil.parser.parse(datum)
-
-            if(to_return.tzinfo is None or
-               to_return.tzinfo.utcoffset(to_return) is None):
-                to_return = to_return.replace(tzinfo=pytz.utc)
-
-            return (to_return.isoformat(), 'date-time',)
-        except (ValueError, TypeError):
-            pass
+        return (str(datum), 'string',)
 
     return (str(datum), 'string',)
 

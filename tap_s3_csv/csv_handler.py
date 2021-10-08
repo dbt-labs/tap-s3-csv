@@ -2,6 +2,7 @@ import codecs
 import csv
 import re
 
+from tap_s3_csv.logger import LOGGER as logger
 
 def generator_wrapper(reader):
     to_return = {}
@@ -14,12 +15,12 @@ def generator_wrapper(reader):
             formatted_key = key
 
             # remove non-word, non-whitespace characters
-            formatted_key = re.sub(r"[^\w\s]", '', formatted_key)
+            formatted_key = re.sub(r"[^\w\s]", ' ', formatted_key)
 
             # replace whitespace with underscores
-            formatted_key = re.sub(r"\s+", '_', formatted_key)
+            formatted_key = re.sub(r"\s+", ' ', formatted_key)
 
-            to_return[formatted_key.lower()] = value
+            to_return[formatted_key] = value
 
         yield to_return
 
@@ -32,10 +33,18 @@ def get_row_iterator(table_spec, file_handle):
         file_handle._raw_stream, encoding='utf-8')
 
     field_names = None
+    delimiter = None
 
     if 'field_names' in table_spec:
         field_names = table_spec['field_names']
+    if 'delimiter' in table_spec:
+        delimiter = table_spec['delimiter']
 
-    reader = csv.DictReader(file_stream, fieldnames=field_names)
+    logger.info('Fields')
+    logger.info(field_names)
+    logger.info('Delimitador')
+    logger.info(delimiter)
+
+    reader = csv.DictReader(file_stream, fieldnames=field_names, delimiter=delimiter)
 
     return generator_wrapper(reader)

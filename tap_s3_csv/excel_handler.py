@@ -21,9 +21,9 @@ def generator_wrapper(reader):
             formatted_key = re.sub(r"[^\w\s]", '', formatted_key)
 
             # replace whitespace with underscores
-            formatted_key = re.sub(r"\s+", '_', formatted_key)
+            formatted_key = re.sub(r"\s+", ' ', formatted_key)
 
-            to_return[formatted_key.lower()] = cell.value
+            #to_return[formatted_key.lower()] = cell.value
 
         yield to_return
 

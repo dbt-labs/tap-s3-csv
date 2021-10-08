@@ -1,6 +1,6 @@
 import unittest
 
-from tap_s3_csv.conversion import convert, count_sample, count_samples, \
+from tap_s3_csv.conversion import count_sample, count_samples, \
     pick_datatype, generate_schema
 
 
