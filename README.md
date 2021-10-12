@@ -1,5 +1,6 @@
 # tap-s3-csv
 Author: Connor McArthur (connor@fishtownanalytics.com)
+modified by: Boggdan Barrientos (boggdan.barrientos@ereaconsulting.com)
 
 [![CircleCI](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master.svg?style=shield)](https://circleci.com/gh/fishtown-analytics/tap-s3-csv) [![Code Climate](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv/badges/gpa.svg)](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv)
 
@@ -60,7 +61,10 @@ And a config file:
             "name": "bluths",
             "pattern": "csv-exports/(.*)\\.csv$",
             "key_properties": ["id"],
-            "format": "csv"
+            "format": "csv",
+            "delimiter": ",",
+            "search_prefix": "bluths"
+
         }
     ]
 }
@@ -76,7 +80,6 @@ An output record might look like:
   "_s3_source_bucket": "csv-bucket",
   "_s3_source_file": "csv-exports/today.csv",
   "_s3_source_lineno": 4,
-  "_s3_extra": null
 }
 ```
 
@@ -127,7 +130,7 @@ See below for an exhaustive list of configuration fields:
             //   ["_s3_source_file", "_s3_source_lineno"]
             "key_properties": ["id"],
 
-            // format, either "csv" or "excel"
+            // format, either "csv"
             "format": "csv",
 
             // if the files don't have a header row, you can specify the field names
@@ -175,4 +178,3 @@ See below for an exhaustive list of configuration fields:
   - `_s3_source_bucket`: The bucket that this record came from
   - `_s3_source_file`: The path to the file that this record came from
   - `_s3_source_lineno`: The line number in the source file that this record was found on
-  - `_s3_extra`: If you specify field names in the config, and there are more records in a row than field names, the overflow will end up here.

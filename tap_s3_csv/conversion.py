@@ -82,16 +82,16 @@ def pick_datatype(counts):
     """
     to_return = 'string'
 
-    if len(counts) == 1:
-        if counts.get('integer', 0) > 0:
-            to_return = 'integer'
-        elif counts.get('number', 0) > 0:
-            to_return = 'number'
-
-    elif(len(counts) == 2 and
-         counts.get('integer', 0) > 0 and
-         counts.get('number', 0) > 0):
-        to_return = 'number'
+    # if len(counts) == 1:
+    #     if counts.get('integer', 0) > 0:
+    #         to_return = 'integer'
+    #     elif counts.get('number', 0) > 0:
+    #         to_return = 'number'
+    #
+    # elif(len(counts) == 2 and
+    #      counts.get('integer', 0) > 0 and
+    #      counts.get('number', 0) > 0):
+    #     to_return = 'number'
 
     return to_return
 
@@ -110,9 +110,10 @@ def generate_schema(samples):
                 '_conversion_type': 'date-time',
             }
         else:
+            #se leen todos los datos como string
             to_return[key] = {
-                'type': ['null', datatype],
-                '_conversion_type': datatype,
+                'type': ['null', 'string'],
+                '_conversion_type': 'string',
             }
 
     return to_return

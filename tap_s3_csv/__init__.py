@@ -92,6 +92,8 @@ def sync_table(config, state, table_spec):
     logger.info('Wrote {} records for table "{}".'
                 .format(records_streamed, table_name))
 
+    logger.info(schema)
+
     return state
 
 
