@@ -3,6 +3,7 @@ import json
 import singer
 
 import dateutil
+import datetime
 import tap_s3_csv.s3 as s3
 import tap_s3_csv.conversion as conversion
 import tap_s3_csv.config
@@ -38,6 +39,7 @@ def get_sampled_schema_for_table(config, table_spec):
         '_s3_source_bucket': {'type': 'string'},
         '_s3_source_file': {'type': 'string'},
         '_s3_source_lineno': {'type': 'integer'},
+        '_s3_sync_date': {'type': 'string'},
     }
 
     data_schema = conversion.generate_schema(samples)
@@ -102,6 +104,8 @@ def sync_table_file(config, s3_file, table_spec, schema):
 
     bucket = config['bucket']
     table_name = table_spec['name']
+    today = datetime.datetime.now()
+    sync_date = today.strftime("%Y-%m-%d %H:%M:%S")
 
     iterator = tap_s3_csv.format_handler.get_row_iterator(
         config, table_spec, s3_file)
@@ -112,9 +116,10 @@ def sync_table_file(config, s3_file, table_spec, schema):
         metadata = {
             '_s3_source_bucket': bucket,
             '_s3_source_file': s3_file,
-
             # index zero, +1 for header row
-            '_s3_source_lineno': records_synced + 2
+            '_s3_source_lineno': records_synced + 2,
+            '_s3_sync_date': sync_date
+
         }
 
         to_write = [{**conversion.convert_row(row, schema), **metadata}]
