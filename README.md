@@ -1,13 +1,10 @@
 # tap-s3-csv
 Author: Connor McArthur (connor@fishtownanalytics.com)
-modified by: Boggdan Barrientos (boggdan.barrientos@ereaconsulting.com)
 
-[![CircleCI](https://circleci.com/gh/fishtown-analytics/tap-s3-csv/tree/master.svg?style=shield)](https://circleci.com/gh/fishtown-analytics/tap-s3-csv) [![Code Climate](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv/badges/gpa.svg)](https://codeclimate.com/github/fishtown-analytics/tap-s3-csv)
+Modified by: Boggdan Barrientos (boggdan.barrientos@ereaconsulting.com)
 
-[Singer](singer.io) tap that produces JSON-formatted data following
-the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
-Given a configuration that specifies a bucket, a file pattern to match, a file format (`csv` or `excel`),
+Given a configuration that specifies a bucket, a file pattern to match, a file format (`csv`),
 and a table name, this tap reads new files from S3, parses them, infers a schema, and outputs the data
 according to the Singer spec.
 
@@ -178,3 +175,4 @@ See below for an exhaustive list of configuration fields:
   - `_s3_source_bucket`: The bucket that this record came from
   - `_s3_source_file`: The path to the file that this record came from
   - `_s3_source_lineno`: The line number in the source file that this record was found on
+  - `_s3_sync_date`: The date time when this sync job was initiated. Is unique for all the rows synced in one single job.
