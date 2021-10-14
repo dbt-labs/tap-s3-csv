@@ -55,6 +55,12 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     to_return = []
     pattern = table_spec['pattern']
     matcher = re.compile(pattern)
+    logger.info('modified_since "{}"'.format(modified_since))
+    pattern_parts = pattern.split('*')
+    folder = pattern_parts[0]
+    #logger.info('Folder "{}"'.format(folder))
+    extension = pattern_parts[1]
+    logger.info('Extra "{}"'.format(extension))
 
     logger.debug(
         'Checking bucket "{}" for keys matching "{}"'
@@ -65,13 +71,17 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
 
     for s3_object in s3_objects:
         key = s3_object['Key']
+        logger.info('Key "{}"'.format(key))
         last_modified = s3_object['LastModified']
-
-        logger.debug('Last modified: {}'.format(last_modified))
-
+        logger.info('Last modified: {}'.format(last_modified))
+        key_to_search = key.replace(folder,'')
+        key_to_search = key_to_search.replace(extension,'')
+        logger.info('Key to search "{}"'.format(key_to_search))
+        matcher_test = matcher.search(key_to_search)
+        logger.info('Matcher search "{}"'.format(matcher_test))
         if(matcher.search(key) and
            (modified_since is None or modified_since < last_modified)):
-            logger.debug('Will download key "{}"'.format(key))
+            logger.info('Will download key "{}"'.format(key))
             to_return.append({'key': key, 'last_modified': last_modified})
         else:
             logger.debug('Will not download key "{}"'.format(key))
