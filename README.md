@@ -175,3 +175,4 @@ See below for an exhaustive list of configuration fields:
   - `_s3_source_bucket`: The bucket that this record came from
   - `_s3_source_file`: The path to the file that this record came from
   - `_s3_source_lineno`: The line number in the source file that this record was found on
+  - `_s3_sync_date`: The date time when this sync job was initiated. Is unique for all the rows synced in one single job.
