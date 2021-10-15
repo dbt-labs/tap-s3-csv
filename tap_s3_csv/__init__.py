@@ -87,7 +87,7 @@ def sync_table(config, state, table_spec):
             'modified_since': s3_file['last_modified'].isoformat()
         }
 
-
+        singer.write_state(state)
 
     logger.info('Wrote {} records for table "{}".'
                 .format(records_streamed, table_name))
@@ -119,9 +119,10 @@ def sync_table_file(config, s3_file, table_spec, schema, state):
 
         to_write = [{**conversion.convert_row(row, schema), **metadata}]
         singer.write_records(table_name, to_write)
+        singer.write_state(state)
         records_synced += 1
 
-    singer.write_state(state)
+
     return records_synced
 
 
