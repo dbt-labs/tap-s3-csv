@@ -55,7 +55,8 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     to_return = []
     pattern = table_spec['pattern']
     matcher = re.compile(pattern)
-    modified_since += ' 00:00+00:00'
+    date_string = modified_since.strftime("%Y-%m-%d 00:00+00:00")
+    modified_since = datetime.strptime(date_string, "%Y-%m-%d 00:00+00:00")
     logger.info('modified_since "{}"'.format(modified_since))
 
     logger.debug(
