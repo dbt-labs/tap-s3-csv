@@ -2,8 +2,8 @@ import re
 
 import boto3
 from tap_s3_csv.logger import LOGGER as logger
-
 import tap_s3_csv.format_handler
+from datetime import datetime
 
 
 def sample_file(config, table_spec, s3_path, sample_rate, max_records):
@@ -55,6 +55,16 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     to_return = []
     pattern = table_spec['pattern']
     matcher = re.compile(pattern)
+    modified_since = config['start_date']
+    time_stamp = " 00:00:00"
+    modified_since = str(modified_since)
+    #Verified if the modified_since come as YYYY-MM-DD HH:MM:SS
+    if time_stamp in modified_since:
+        modified_since = modified_since
+    else:
+        modified_since += time_stamp
+    logger.info('Format modified_since "{}"'.format(modified_since))
+    modified_since = datetime.strptime(modified_since, "%Y-%m-%d 00:00:00")
     date_string = modified_since.strftime("%Y-%m-%d 00:00+00:00")
     modified_since = datetime.strptime(date_string, "%Y-%m-%d 00:00+00:00")
     logger.info('modified_since "{}"'.format(modified_since))
@@ -71,10 +81,8 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
         logger.info('Key "{}"'.format(key))
         last_modified = s3_object['LastModified']
         logger.info('Last modified: {}'.format(last_modified))
-        matcher_test = matcher.search(key_to_search)
-        logger.info('Matcher search "{}"'.format(matcher_test))
         if(matcher.search(key) and
-           (modified_since is None or modified_since < last_modified)):
+           (modified_since is None or modified_since < last_modified.replace(tzinfo=None))):
             logger.info('Will download key "{}"'.format(key))
             to_return.append({'key': key, 'last_modified': last_modified})
         else:
