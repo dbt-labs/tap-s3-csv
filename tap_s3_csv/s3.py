@@ -63,7 +63,7 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
         modified_since = modified_since
     else:
         modified_since += time_stamp
-    logger.info('Format modified_since "{}"'.format(modified_since))
+    logger.debug('Format modified_since "{}"'.format(modified_since))
     modified_since = datetime.strptime(modified_since, "%Y-%m-%d 00:00:00")
     date_string = modified_since.strftime("%Y-%m-%d 00:00+00:00")
     modified_since = datetime.strptime(date_string, "%Y-%m-%d 00:00+00:00")
@@ -78,9 +78,9 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
 
     for s3_object in s3_objects:
         key = s3_object['Key']
-        logger.info('Key "{}"'.format(key))
+        logger.debug('Key "{}"'.format(key))
         last_modified = s3_object['LastModified']
-        logger.info('Last modified: {}'.format(last_modified))
+        logger.debug('Last modified: {}'.format(last_modified))
         if(matcher.search(key) and
            (modified_since is None or modified_since < last_modified.replace(tzinfo=None))):
             logger.info('Will download key "{}"'.format(key))
