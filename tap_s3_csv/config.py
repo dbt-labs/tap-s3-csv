@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 
 from tap_s3_csv.logger import LOGGER as logger
 from voluptuous import Schema, Required, Any, Optional
@@ -8,6 +9,7 @@ CONFIG_CONTRACT = Schema({
     Required('aws_secret_access_key'): str,
     Required('start_date'): str,
     Required('bucket'): str,
+    Optional('lookback_days'): int,  # If set, overrides start_date with dynamic calculation
     Required('tables'): [{
         Required('name'): str,
         Required('pattern'): str,
@@ -44,5 +46,12 @@ def load(filename):
         raise RuntimeError
 
     CONFIG_CONTRACT(config)
+    
+    # If lookback_days is specified, calculate start_date dynamically
+    if 'lookback_days' in config:
+        days = config['lookback_days']
+        calculated_date = datetime.utcnow() - timedelta(days=days)
+        config['start_date'] = calculated_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        logger.info(f"Calculated start_date from lookback_days={days}: {config['start_date']}")
 
     return config

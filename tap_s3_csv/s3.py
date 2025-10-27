@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 
 import boto3
 from tap_s3_csv.logger import LOGGER as logger
@@ -65,7 +66,8 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     s3_objects = list_files_in_bucket(
         config, bucket,
         table_spec.get('max_results', 1000),
-        table_spec.get('search_prefix'))
+        table_spec.get('search_prefix'),
+        modified_since)  # Pass modified_since to optimize S3 listing
 
     for s3_object in s3_objects:
         key = s3_object['Key']
@@ -85,7 +87,7 @@ def get_input_files_for_table(config, table_spec, modified_since=None):
     return to_return
 
 
-def list_files_in_bucket(config, bucket, max_results, search_prefix=None):
+def list_files_in_bucket(config, bucket, max_results, search_prefix=None, modified_since=None):
     s3_client = boto3.client(
         's3',
         aws_access_key_id=config['aws_access_key_id'],
@@ -93,30 +95,73 @@ def list_files_in_bucket(config, bucket, max_results, search_prefix=None):
 
     s3_objects = []
 
-    args = {
-        'Bucket': bucket,
-        'MaxKeys': max_results,
-    }
+    # If modified_since is provided and search_prefix has date structure,
+    # generate daily prefixes to avoid listing all files
+    if modified_since and search_prefix:
+        # Generate list of dates from modified_since to today
+        date_prefixes = []
+        current_date = modified_since.date()
+        today = datetime.utcnow().date()
+        
+        while current_date <= today:
+            date_str = current_date.strftime('%Y-%m-%d')
+            date_prefix = f"{search_prefix}/{date_str}"
+            date_prefixes.append(date_prefix)
+            current_date += timedelta(days=1)
+        
+        logger.info(f"Using {len(date_prefixes)} date-based prefixes to optimize S3 listing")
+        
+        # List files for each date prefix
+        for date_prefix in date_prefixes:
+            args = {
+                'Bucket': bucket,
+                'MaxKeys': max_results,
+                'Prefix': date_prefix
+            }
+            
+            try:
+                result = s3_client.list_objects_v2(**args)
+                
+                if 'Contents' in result:
+                    s3_objects += result['Contents']
+                    next_continuation_token = result.get('NextContinuationToken')
 
-    if search_prefix is not None:
-        args['Prefix'] = search_prefix
+                    while next_continuation_token is not None:
+                        continuation_args = args.copy()
+                        continuation_args['ContinuationToken'] = next_continuation_token
+                        result = s3_client.list_objects_v2(**continuation_args)
+                        s3_objects += result['Contents']
+                        next_continuation_token = result.get('NextContinuationToken')
+            except Exception as e:
+                logger.debug(f"No files found for prefix {date_prefix}: {e}")
+    else:
+        # Original behavior: list all files with single prefix
+        args = {
+            'Bucket': bucket,
+            'MaxKeys': max_results,
+        }
 
-    result = s3_client.list_objects_v2(**args)
+        if search_prefix is not None:
+            args['Prefix'] = search_prefix
 
-    s3_objects += result['Contents']
-    next_continuation_token = result.get('NextContinuationToken')
+        result = s3_client.list_objects_v2(**args)
 
-    while next_continuation_token is not None:
-        logger.debug('Continuing pagination with token "{}".'
-                     .format(next_continuation_token))
+        if 'Contents' in result:
+            s3_objects += result['Contents']
+            next_continuation_token = result.get('NextContinuationToken')
 
-        continuation_args = args.copy()
-        continuation_args['ContinuationToken'] = next_continuation_token
+            while next_continuation_token is not None:
+                logger.debug('Continuing pagination with token "{}".'
+                             .format(next_continuation_token))
 
-        result = s3_client.list_objects_v2(**continuation_args)
+                continuation_args = args.copy()
+                continuation_args['ContinuationToken'] = next_continuation_token
 
-        s3_objects += result['Contents']
-        next_continuation_token = result.get('NextContinuationToken')
+                result = s3_client.list_objects_v2(**continuation_args)
+
+                if 'Contents' in result:
+                    s3_objects += result['Contents']
+                next_continuation_token = result.get('NextContinuationToken')
 
     logger.info("Found {} files.".format(len(s3_objects)))
 
